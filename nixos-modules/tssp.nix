@@ -22,13 +22,26 @@ in
       default = [ ];
       description = "TSSP font packages that will be added to turing-smart-screen-python installation";
       example = lib.literalExpression ''
-        with pkgs.tsspResources.fonts; [  ]
+        with pkgs.tsspResources.fonts; [ 
+          geforce
+          generale-mono
+          jetbrains-mono
+          racespace
+          roboto
+          roboto-mono
+        ]
       '';
     };
     themes = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
       description = "TSSP theme packages that will be added to turing-smart-screen-python installation";
+      example = lib.literalExpression ''
+        with pkgs.tsspResources.themes; [ 
+          LandscapeEarth
+          Landscape6Grid
+        ]
+      '';
     };
     finalPackage = lib.mkOption {
       type = lib.types.package;
