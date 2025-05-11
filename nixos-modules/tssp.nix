@@ -1,7 +1,15 @@
-{ pkgs, lib, config, ... }: let
+inputs:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+let
   cfg = config.services.turing-smart-screen-python;
-  tsspPkgs = import ./pkgs { inherit pkgs; };
-in {
+in
+{
+
   options.services.turing-smart-screen-python = {
     enable = lib.mkEnableOption "Turing smart screen python daemon";
     systemd.enable = lib.mkOption {
@@ -11,21 +19,32 @@ in {
     };
     fonts = lib.mkOption {
       type = lib.types.listOf lib.types.package;
-      default = [];
+      default = [ ];
       description = "TSSP font packages that will be added to turing-smart-screen-python installation";
+      example = lib.literalExpression ''
+        with pkgs.tsspResources.fonts; [  ]
+      '';
     };
     themes = lib.mkOption {
       type = lib.types.listOf lib.types.package;
-      default = [];
+      default = [ ];
       description = "TSSP theme packages that will be added to turing-smart-screen-python installation";
     };
     finalPackage = lib.mkOption {
       type = lib.types.package;
+      readOnly = true;
+      visible = false;
       description = "The final turing-smart-screen-python package with all configured resources installed";
+      default = pkgs.turing-smart-screen-python.override {
+        fontPackages = cfg.fonts;
+        themePackages = cfg.themes;
+        tsspConfiguration = cfg.settings;
+      };
     };
+
     settings = lib.mkOption {
-      inherit (pkgs.formats.yaml {}) type;
-      default = {};
+      inherit (pkgs.formats.yaml { }) type;
+      default = { };
       example = {
         config = {
           COM_PORT = "/dev/ttyACM0";
@@ -54,29 +73,26 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    services.turing-smart-screen-python.finalPackage = (tsspPkgs.turing-smart-screen-python.override {
-      fontPackages = cfg.fonts;
-      themePackages = cfg.themes;
-      tsspConfiguration = cfg.settings;
-    });
-
-    systemd.services.turing-smart-screen-python = lib.mkIf cfg.systemd.enable {
-      description = "Turing smart screen python service";
-      wantedBy = [ "multi-user.target" ];
-      requires = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      serviceConfig = {
-        Type = "simple";
-        SupplementaryGroups = [ "dialout" ];
-        WorkingDirectory = "${cfg.finalPackage}/share/turing-smart-screen-python";
-        ExecStart = "${cfg.finalPackage}/share/turing-smart-screen-python/run";
-        Restart = "always";
-        ProtectSystem = "full";
-        ProtectHome = "read-only";
-        PrivateTmp = true;
+  config =
+    {
+      config.nixpkgs.overlays = lib.singleton inputs.self.overlays.default;
+    }
+    // (lib.mkIf cfg.enable {
+      systemd.services.turing-smart-screen-python = lib.mkIf cfg.systemd.enable {
+        description = "Turing smart screen python service";
+        wantedBy = [ "multi-user.target" ];
+        requires = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+        serviceConfig = {
+          Type = "simple";
+          SupplementaryGroups = [ "dialout" ];
+          WorkingDirectory = "${cfg.finalPackage}/share/turing-smart-screen-python";
+          ExecStart = "${cfg.finalPackage}/share/turing-smart-screen-python/run";
+          Restart = "always";
+          ProtectSystem = "full";
+          ProtectHome = "read-only";
+          PrivateTmp = true;
+        };
       };
-    };
-  };
+    });
 }
-
