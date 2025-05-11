@@ -58,7 +58,7 @@ in
     settings = lib.mkOption {
       inherit (pkgs.formats.yaml { }) type;
       default = { };
-      example = {
+      example = lib.literalExpression ''
         config = {
           COM_PORT = "/dev/ttyACM0";
           THEME = "3.5inchTheme2";
@@ -78,7 +78,7 @@ in
           BRIGHTNESS = 20;
           DISPLAY_REVERSE = false;
         };
-      };
+      '';
       description = ''
         Turing smart screen python configuration.
 
