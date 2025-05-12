@@ -12,11 +12,6 @@ in
 
   options.services.turing-smart-screen-python = {
     enable = lib.mkEnableOption "Turing smart screen python daemon";
-    systemd.enable = lib.mkOption {
-      type = lib.types.bool;
-      description = "Whether to enable turing-smart-screen-python systemd service";
-      default = true;
-    };
     fonts = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
@@ -86,26 +81,24 @@ in
     };
   };
 
-  config =
-    {
-      config.nixpkgs.overlays = lib.singleton inputs.self.overlays.default;
-    }
-    // (lib.mkIf cfg.enable {
-      systemd.services.turing-smart-screen-python = lib.mkIf cfg.systemd.enable {
-        description = "Turing smart screen python service";
-        wantedBy = [ "multi-user.target" ];
-        requires = [ "network-online.target" ];
-        after = [ "network-online.target" ];
-        serviceConfig = {
-          Type = "simple";
-          SupplementaryGroups = [ "dialout" ];
-          WorkingDirectory = "${cfg.finalPackage}/share/turing-smart-screen-python";
-          ExecStart = "${cfg.finalPackage}/share/turing-smart-screen-python/run";
-          Restart = "always";
-          ProtectSystem = "full";
-          ProtectHome = "read-only";
-          PrivateTmp = true;
-        };
+  config = {
+    nixpkgs.overlays = lib.singleton inputs.self.overlays.default;
+
+    systemd.services.turing-smart-screen-python = lib.mkIf (cfg.enable) {
+      description = "Turing smart screen python service";
+      wantedBy = [ "multi-user.target" ];
+      requires = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      serviceConfig = {
+        Type = "simple";
+        SupplementaryGroups = [ "dialout" ];
+        WorkingDirectory = "${cfg.finalPackage}/share/turing-smart-screen-python";
+        ExecStart = "${cfg.finalPackage}/share/turing-smart-screen-python/run";
+        Restart = "always";
+        ProtectSystem = "full";
+        ProtectHome = "read-only";
+        PrivateTmp = true;
       };
-    });
+    };
+  };
 }
