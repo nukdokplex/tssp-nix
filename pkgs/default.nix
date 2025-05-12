@@ -16,7 +16,7 @@
     (withSystem prev.stdenv.hostPlatform.system (
       { config, ... }:
       {
-        tsspPackages = lib.mergeAttrsList (
+        tsspPackages = builtins.foldl' (acc: elem: acc // elem) { } (
           lib.mapAttrsToList (name: value: lib.setAttrByPath (lib.splitString "/" name) value) config.packages
         );
       }
