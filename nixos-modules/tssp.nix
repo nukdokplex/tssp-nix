@@ -9,9 +9,23 @@ let
   cfg = config.services.turing-smart-screen-python;
 in
 {
-
   options.services.turing-smart-screen-python = {
     enable = lib.mkEnableOption "Turing smart screen python daemon";
+
+    stopOnSleep = lib.mkOption rec {
+      type = lib.types.bool;
+      default = false;
+      example = !default;
+      description = "Whether to stop Turing Smart Screen Python on system sleep.";
+    };
+
+    startOnResume = lib.mkOption {
+      type = lib.types.bool;
+      default = cfg.stopOnSleep;
+      example = !cfg.stopOnSleep;
+      description = "Whether to start Turing Smart Screen Python on system resume.";
+    };
+
     fonts = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
@@ -27,6 +41,7 @@ in
         ]
       '';
     };
+
     themes = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
@@ -38,6 +53,7 @@ in
         ]
       '';
     };
+
     finalPackage = lib.mkOption {
       type = lib.types.package;
       readOnly = true;
@@ -84,8 +100,8 @@ in
   config = {
     nixpkgs.overlays = lib.singleton inputs.self.overlays.default;
 
-    systemd.services.turing-smart-screen-python = lib.mkIf (cfg.enable) {
-      description = "Turing smart screen python service";
+    systemd.services.turing-smart-screen-python = lib.mkIf cfg.enable {
+      description = "Turing Smart Screen Python service";
       wantedBy = [ "multi-user.target" ];
       requires = [ "network-online.target" ];
       after = [ "network-online.target" ];
@@ -98,6 +114,28 @@ in
         ProtectSystem = "full";
         ProtectHome = "read-only";
         PrivateTmp = true;
+      };
+    };
+
+    systemd.services.turing-smart-screen-python-stop = lib.mkIf (cfg.enable && cfg.stopOnSleep) {
+      description = "Turing Smart Screen Python stop before sleep service";
+      before = [ "sleep.target" ];
+      wantedBy = [ "sleep.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "'${lib.getExe' config.systemd.package "systemctl"}' --no-block stop ${config.systemd.services.turing-smart-screen-python.name}";
+        Restart = "no";
+      };
+    };
+
+    systemd.services.turing-smart-screen-python-resume = lib.mkIf (cfg.enable && cfg.startOnResume) {
+      description = "Turing Smart Screen Python resume after sleep service";
+      after = [ "sleep.target" ];
+      wantedBy = [ "sleep.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "'${lib.getExe' config.systemd.package "systemctl"}' --no-block start ${config.systemd.services.turing-smart-screen-python.name}";
+        Restart = "no";
       };
     };
   };
