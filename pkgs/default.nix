@@ -1,7 +1,7 @@
 {
   inputs,
-  config,
   withSystem,
+  lib,
   ...
 }:
 {
@@ -16,7 +16,9 @@
     (withSystem prev.stdenv.hostPlatform.system (
       { config, ... }:
       {
-        tsspPackages = config.packages;
+        tsspPackages = lib.mergeAttrsList (
+          lib.mapAttrsToList (name: value: lib.setAttrByPath (lib.splitString "/" name) value) config.packages
+        );
       }
     ));
 }
