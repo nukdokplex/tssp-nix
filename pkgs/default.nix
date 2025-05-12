@@ -2,13 +2,19 @@
   inputs,
   withSystem,
   lib,
+  tsspVersion,
   ...
 }:
 {
   perSystem =
     { pkgs, ... }:
     {
-      packages = inputs.flake-utils.lib.flattenTree (import ./packages.nix { inherit pkgs; });
+      packages = inputs.flake-utils.lib.flattenTree (
+        import ./packages.nix {
+          inherit pkgs tsspVersion;
+          tsspSrc = inputs.tssp;
+        }
+      );
     };
 
   flake.overlays.default =

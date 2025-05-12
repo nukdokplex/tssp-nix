@@ -137,7 +137,8 @@
         "flake-utils": "flake-utils",
         "git-hooks-nix": "git-hooks-nix",
         "nixpkgs": "nixpkgs",
-        "systems": "systems"
+        "systems": "systems",
+        "tssp": "tssp"
       }
     },
     "systems": {
@@ -152,6 +153,23 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default-linux",
+        "type": "github"
+      }
+    },
+    "tssp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1743504260,
+        "narHash": "sha256-mysI5xlUkMu6DNHfCvFwfyAFnDJOw3BZZzx2IjCbHOw=",
+        "owner": "mathoudebine",
+        "repo": "turing-smart-screen-python",
+        "rev": "b3f08b8bcaf48ea57ac4dd847457dce92806e88b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mathoudebine",
+        "ref": "3.9.2",
+        "repo": "turing-smart-screen-python",
         "type": "github"
       }
     }

@@ -19,6 +19,14 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
+    tssp = {
+      type = "github";
+      owner = "mathoudebine";
+      repo = "turing-smart-screen-python";
+      # ref must be in this input!!!
+      ref = "3.9.2";
+      flake = false;
+    };
   };
 
   outputs =
@@ -26,6 +34,8 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }:
       {
+        _module.args.tsspVersion = (import ./flake.nix).inputs.tssp.ref; # whoa
+
         imports = [
           inputs.git-hooks-nix.flakeModule
           ./pkgs
