@@ -9,5 +9,5 @@
       packages = inputs.flake-utils.lib.flattenTree (import ./packages.nix { inherit pkgs; });
     };
 
-  flake.overlays.default = final: prev: import ./packages.nix { pkgs = prev; };
+  flake.overlays.default = final: prev: prev // (import ./packages.nix { pkgs = prev; });
 }
