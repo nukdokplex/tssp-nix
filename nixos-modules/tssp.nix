@@ -17,7 +17,7 @@ in
       default = [ ];
       description = "TSSP font packages that will be added to turing-smart-screen-python installation";
       example = lib.literalExpression ''
-        with pkgs.tsspResources.fonts; [ 
+        with pkgs.tsspPackages.resources.fonts; [ 
           geforce
           generale-mono
           jetbrains-mono
@@ -32,7 +32,7 @@ in
       default = [ ];
       description = "TSSP theme packages that will be added to turing-smart-screen-python installation";
       example = lib.literalExpression ''
-        with pkgs.tsspResources.themes; [ 
+        with pkgs.tsspPackages.resources.themes; [ 
           LandscapeEarth
           Landscape6Grid
         ]
@@ -43,7 +43,7 @@ in
       readOnly = true;
       visible = false;
       description = "The final turing-smart-screen-python package with all configured resources installed";
-      default = pkgs.turing-smart-screen-python.override {
+      default = pkgs.tsspPackages.turing-smart-screen-python.override {
         fontPackages = cfg.fonts;
         themePackages = cfg.themes;
         tsspConfiguration = cfg.settings;

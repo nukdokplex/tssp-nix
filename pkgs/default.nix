@@ -1,5 +1,7 @@
 {
   inputs,
+  config,
+  withSystem,
   ...
 }:
 {
@@ -9,5 +11,12 @@
       packages = inputs.flake-utils.lib.flattenTree (import ./packages.nix { inherit pkgs; });
     };
 
-  flake.overlays.default = final: prev: prev // (import ./packages.nix { pkgs = prev; });
+  flake.overlays.default =
+    final: prev:
+    (withSystem prev.stdenv.hostPlatform.system (
+      { config, ... }:
+      {
+        tsspPackages = config.packages;
+      }
+    ));
 }

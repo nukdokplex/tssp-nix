@@ -5,5 +5,5 @@ pkgs.lib.fix (self: {
   };
 
   python312Packages = pkgs.recurseIntoAttrs (pkgs.callPackage ./python312Packages { });
-  tsspResources = pkgs.recurseIntoAttrs (pkgs.callPackage ./resources { });
+  resources = pkgs.recurseIntoAttrs (pkgs.callPackage ./resources { });
 })
