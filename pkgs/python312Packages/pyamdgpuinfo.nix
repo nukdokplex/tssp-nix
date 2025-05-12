@@ -10,7 +10,7 @@
 , ...
 }: python312.pkgs.buildPythonPackage rec {
   pname = "pyamdgpuinfo";
-  version = "2.1.6";
+  version = "2.1.7";
 
   src = fetchFromGitHub {
     owner = "mark9064";
