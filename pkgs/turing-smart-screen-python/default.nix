@@ -61,6 +61,10 @@ python312.pkgs.buildPythonApplication (
     meta = {
       homepage = "github.com/mathoudebine/turing-smart-screen-python";
       description = "Unofficial Python system monitor and library for small IPS USB-C displays like Turing Smart Screen or XuanFang.";
+      platforms = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       licenses = with lib.licenses; [ gpl3Only ];
     };
   })
