@@ -58,6 +58,7 @@ let
               else
                 ""
             );
+          platforms = lib.platforms.all;
           license = with lib.licenses; [ gpl3Only ];
         };
 
