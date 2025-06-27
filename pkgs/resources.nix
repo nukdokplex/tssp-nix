@@ -1,12 +1,14 @@
 {
   lib,
   stdenvNoCC,
-  tsspSrc,
-  tsspVersion,
   recurseIntoAttrs,
+  fetchFromGitHub,
+  turing-smart-screen-python,
   ...
 }:
 let
+  inherit (turing-smart-screen-python) src version meta;
+
   reservedThemeFolders = [ "--Theme examples" ];
 
   isThemeFolder = p: p.value == "directory" && !builtins.elem p.name reservedThemeFolders;
@@ -15,16 +17,14 @@ let
   themes = builtins.map (p: p.name) (
     lib.filter isThemeFolder (
       lib.mapAttrsToList (name: value: lib.nameValuePair name value) (
-        builtins.readDir (tsspSrc + /res/themes)
+        builtins.readDir (src + /res/themes)
       )
     )
   );
 
   fonts = builtins.map (p: p.name) (
     lib.filter isFontFolder (
-      lib.mapAttrsToList (name: value: lib.nameValuePair name value) (
-        builtins.readDir (tsspSrc + /res/fonts)
-      )
+      lib.mapAttrsToList (name: value: lib.nameValuePair name value) (builtins.readDir (src + /res/fonts))
     )
   );
 
@@ -40,16 +40,14 @@ let
       self:
       stdenvNoCC.mkDerivation {
         pname = sanitizeIdentifier dirName;
-        version = tsspVersion;
-
-        src = tsspSrc;
+        inherit src version;
 
         installPhase = ''
           cp -a "res/${resType}s/${dirName}" "$out"
         '';
 
         meta = {
-          homepage = "https://github.com/mathoudebine/turing-smart-screen-python/tree/${lib.escapeURL tsspSrc.rev}/res/${resType}s/${lib.escapeURL dirName}";
+          inherit (meta) homepage license;
           description =
             "This is \"${dirName}\" ${resType} package for turing-smart-screen-python package."
             + (
@@ -59,7 +57,6 @@ let
                 ""
             );
           platforms = lib.platforms.all;
-          license = with lib.licenses; [ gpl3Only ];
         };
 
       }

@@ -1,26 +1,34 @@
 {
   lib,
+  fetchFromGitHub,
+
+  python3Packages,
+  pyamdgpuinfo,
+  gputil-mathoudebine,
+
   fontPackages ? [ ],
   themePackages ? [ ],
   tsspConfiguration ? { },
-  python312,
-  pyamdgpuinfo,
-  gputil-mathoudebine,
-  tsspSrc,
-  tsspVersion,
   ...
 }:
-python312.pkgs.buildPythonApplication (
-  lib.fix (self: {
+# wtf buildPython{Package, Application} has no builtin fixed-point
+python3Packages.buildPythonApplication (
+  lib.fix (final: {
     pname = "turing-smart-screen-python";
-    version = tsspVersion;
+    version = "3.9.3";
 
-    src = tsspSrc;
+    src = fetchFromGitHub {
+      owner = "mathoudebine";
+      repo = "turing-smart-screen-python";
+      rev = final.version;
+      hash = "sha256-VbuJ6f3RUXVFjTZXcv/U8VdYLA2uppZP1yOl8jKWmaA=";
+    };
 
+    disabled = !python3Packages.pythonAtLeast "3.9";
     format = "other";
     patches = [ ./disable-log-file.patch ];
 
-    propagatedBuildInputs = with python312.pkgs; [
+    dependencies = with python3Packages; [
       pyserial
       pyyaml
       psutil
@@ -30,15 +38,10 @@ python312.pkgs.buildPythonApplication (
       ping3
       pillow
       numpy
+
       gputil-mathoudebine
       pyamdgpuinfo
     ];
-
-    passthru = {
-      python = python312;
-      # PYTHONPATH of all deps used by the package
-      pythonPath = python312.pkgs.makePythonPath self.propagatedBuildInputs;
-    };
 
     installPhase =
       let
