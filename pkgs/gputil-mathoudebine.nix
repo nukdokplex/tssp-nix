@@ -19,7 +19,7 @@ python3Packages.buildPythonPackage (
     meta = {
       homepage = "https://github.com/mathoudebine/gputil";
       description = "Python module for getting the GPU status from NVIDIA GPUs using `nvidia-smi`. This is patched version to work with Python 3.12.";
-      license = with lib.licenses; [ mit ];
+      license = lib.licenses.mit;
       platforms = [ "x86_64-linux" ];
       maintainers = with lib.maintainers; [ nukdokplex ];
     };

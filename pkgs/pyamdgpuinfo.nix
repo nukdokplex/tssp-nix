@@ -35,7 +35,7 @@ python3Packages.buildPythonPackage (
     meta = {
       homepage = "https://github.com/mark9064/pyamdgpuinfo";
       description = "Python module that provides AMD GPU information";
-      licenses = with lib.licenses; [ gpl3Only ];
+      licenses = lib.licenses.gpl3Only;
       platforms = [ "x86_64-linux" ];
       maintainers = with lib.maintainers; [ nukdokplex ];
     };

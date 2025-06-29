@@ -47,7 +47,7 @@ let
         '';
 
         meta = {
-          inherit (meta) homepage license;
+          inherit (meta) homepage license maintainers;
           description =
             "This is \"${dirName}\" ${resType} package for turing-smart-screen-python package."
             + (

@@ -68,7 +68,8 @@ python3Packages.buildPythonApplication (
         "x86_64-linux"
         "aarch64-linux"
       ];
-      licenses = with lib.licenses; [ gpl3Only ];
+      maintainers = with lib.maintainers; [ nukdokplex ];
+      license = lib.licenses.gpl3Only;
     };
   })
 )
