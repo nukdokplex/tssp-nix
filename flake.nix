@@ -20,16 +20,23 @@
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, ... }:
+      {
+        lib,
+        inputs,
+        config,
+        ...
+      }:
       {
         imports = with inputs; [
           git-hooks-nix.flakeModule
           pkgs-by-name-for-flake-parts.flakeModule
           ./overlays.nix
-          ./nixos-modules
         ];
 
         systems = import inputs.systems;
+
+        flake.nixosModules.tssp = import ./nixos-module.nix inputs;
+        flake.nixosModules.default = config.flake.nixosModules.tssp;
 
         perSystem =
           { pkgs, ... }:

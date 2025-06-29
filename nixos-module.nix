@@ -98,7 +98,7 @@ in
   };
 
   config = {
-    nixpkgs.overlays = lib.singleton inputs.self.overlays.default;
+    nixpkgs.overlays = lib.singleton inputs.self.outputs.overlays.default;
 
     systemd.services.turing-smart-screen-python = lib.mkIf cfg.enable {
       description = "Turing Smart Screen Python service";
