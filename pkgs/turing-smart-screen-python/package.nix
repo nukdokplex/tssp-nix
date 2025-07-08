@@ -4,7 +4,7 @@
 
   python3Packages,
   pyamdgpuinfo,
-  gputil-mathoudebine,
+  gputil,
 
   fontPackages ? [ ],
   themePackages ? [ ],
@@ -39,7 +39,7 @@ python3Packages.buildPythonApplication (
       pillow
       numpy
 
-      gputil-mathoudebine
+      gputil
       pyamdgpuinfo
     ];
 
