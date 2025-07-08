@@ -21,16 +21,15 @@
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       {
-        lib,
         inputs,
         config,
         ...
       }:
       {
         imports = with inputs; [
-          git-hooks-nix.flakeModule
           pkgs-by-name-for-flake-parts.flakeModule
           ./overlays.nix
+          ./devshells.nix
         ];
 
         systems = import inputs.systems;
