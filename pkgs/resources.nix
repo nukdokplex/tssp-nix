@@ -2,7 +2,6 @@
   lib,
   stdenvNoCC,
   recurseIntoAttrs,
-  fetchFromGitHub,
   turing-smart-screen-python,
   ...
 }:
@@ -36,31 +35,27 @@ let
 
   makeResourceDerivation =
     dirName: resType:
-    lib.fix (
-      self:
-      stdenvNoCC.mkDerivation {
-        pname = sanitizeIdentifier dirName;
-        inherit src version;
+    stdenvNoCC.mkDerivation (final: {
+      pname = sanitizeIdentifier dirName;
+      inherit src version;
 
-        installPhase = ''
-          cp -a "res/${resType}s/${dirName}" "$out"
-        '';
+      installPhase = ''
+        cp -a "res/${resType}s/${dirName}" "$out"
+      '';
 
-        meta = {
-          inherit (meta) homepage license maintainers;
-          description =
-            "This is \"${dirName}\" ${resType} package for turing-smart-screen-python package."
-            + (
-              if dirName != self.pname then
-                " Notice that now it's renamed to \"${self.pname}}\" so you need to use this name in your configuration."
-              else
-                ""
-            );
-          platforms = lib.platforms.all;
-        };
-
-      }
-    );
+      meta = {
+        inherit (meta) homepage license maintainers;
+        description =
+          "This is \"${dirName}\" ${resType} package for turing-smart-screen-python package."
+          + (
+            if dirName != final.pname then
+              " Notice that now it's renamed to \"${final.pname}}\" so you need to use this name in your configuration."
+            else
+              ""
+          );
+        platforms = lib.platforms.all;
+      };
+    });
 in
 recurseIntoAttrs {
   themes = recurseIntoAttrs (
