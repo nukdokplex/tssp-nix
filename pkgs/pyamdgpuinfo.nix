@@ -16,7 +16,7 @@ python3Packages.buildPythonPackage (
       owner = "mark9064";
       repo = "pyamdgpuinfo";
       rev = "v${final.version}";
-      hash = "sha256-waHLLGefLAq9qjuaeLGItAIsgXi2SZPKJzxax4HYQ7U=";
+      hash = "sha256-e+pgLDe+fFgK+KNDuMkNSd2/1gorqSDQeSRJiRDZ5Nw=";
     };
 
     pyproject = true;
