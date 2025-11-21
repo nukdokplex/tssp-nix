@@ -1,7 +1,6 @@
 {
   lib,
   stdenvNoCC,
-  recurseIntoAttrs,
   turing-smart-screen-python,
   ...
 }:
@@ -57,15 +56,15 @@ let
       };
     });
 in
-recurseIntoAttrs {
-  themes = recurseIntoAttrs (
+lib.recurseIntoAttrs {
+  themes = lib.recurseIntoAttrs (
     builtins.listToAttrs (
       builtins.map (
         dirName: lib.nameValuePair (sanitizeIdentifier dirName) (makeResourceDerivation dirName "theme")
       ) themes
     )
   );
-  fonts = recurseIntoAttrs (
+  fonts = lib.recurseIntoAttrs (
     builtins.listToAttrs (
       builtins.map (
         dirName: lib.nameValuePair (sanitizeIdentifier dirName) (makeResourceDerivation dirName "font")
